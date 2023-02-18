@@ -5,7 +5,6 @@
   
   <!-- Set global properties for this build. -->
   <property name="src" location="src"/>
-  <property name="web" location="web"/>
   <property name="lib" location="lib"/>
   <property name="build" location="build"/>
   <property name="dist"  location="dist"/>
@@ -17,16 +16,14 @@
   </path>
 
   <target name="init">
-    <!-- Create the timestamp. -->
     <tstamp/>
-
-    <!-- Create the build and doc directories -->
-    <mkdir dir="${build}"/>
-    <mkdir dir="${doc}"/>
+    <mkdir dir="${lib}"/>
   </target>
 
   <target name="compile" depends="init" description="compile the source">
-    <!-- Compile the java code from ${src} into ${build}. -->
+    <mkdir dir="${build}"/>
+
+    <!-- Compile Java code from ${src} into ${build}. -->
     <javac srcdir="${src}" destdir="${build}" includeantruntime="false">
       <classpath refid="project.class.path"/>
       <compilerarg value="-Xlint:deprecation"/>
@@ -34,7 +31,6 @@
   </target>
 
   <target name="dist" depends="compile" description="generate the distribution">
-    <!-- Create the distribution directory. -->
     <mkdir dir="${dist}"/>
 
     <manifestclasspath property="jar.classpath" jarfile="${jar.file}">
@@ -43,7 +39,7 @@
       </classpath>
     </manifestclasspath>
     
-    <!-- Put everything into the JAR file. -->  
+    <!-- Put everything into JAR file. -->  
     <jar destfile="${dist}/db2-auth.jar" basedir="${build}">
       <restrict> 
         <archives> 
@@ -60,6 +56,8 @@
   </target>
 
   <target name="javadoc" depends="init">
+    <mkdir dir="${doc}"/>
+
     <javadoc sourcepath="${src}" destdir="${doc}">
       <classpath refid="project.class.path"/>
       <fileset dir="${src}">
@@ -70,7 +68,6 @@
   </target>  
 
   <target name="clean" description="clean up" >
-    <!-- Delete the build}, dist and doc directory trees. -->
     <delete dir="${build}"/>
     <delete dir="${dist}"/>
     <delete dir="${doc}"/>
