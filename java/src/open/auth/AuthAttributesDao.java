@@ -56,14 +56,14 @@ public class AuthAttributesDao {
     logger.finer(() -> String.format("ENTRY %s %s", this, maskedSessionId));
     String sql = "CALL " + schemaName + ".attributes.get_attributes(?, ?, ?)";
     try (CallableStatement statement = connection.prepareCall(sql)) {
-      logger.info(() -> String.format("Retrieving current attribute set id... [%s %s]", this, maskedSessionId));
-      logger.info(() -> String.format("Calling stored procedure... [%s %s]", this, maskedSessionId));
+      logger.fine(() -> String.format("Retrieving current attribute set id... [%s %s]", this, maskedSessionId));
+      logger.fine(() -> String.format("Calling stored procedure... [%s %s]", this, maskedSessionId));
       statement.setString(1, sessionId);
       statement.setInt(2, sinceGenerationId);
       statement.registerOutParameter(3, Types.ARRAY);
       statement.execute();
 
-      logger.info(() -> String.format("Building session attribute list... [%s %s]", this, maskedSessionId));
+      logger.fine(() -> String.format("Building session attribute list... [%s %s]", this, maskedSessionId));
       Array attributeArray = statement.getArray(3);
       Struct[] attributeStructs = (Struct[]) attributeArray.getArray();
       for (int i = 0; i < attributeStructs.length; i++) {
@@ -109,7 +109,7 @@ public class AuthAttributesDao {
     logger.finer(() -> String.format("ENTRY %s %s", this, maskedSessionId));
     String sql = "CALL " + schemaName + ".attributes.save_attributes(?, ?)";
     try (CallableStatement statement = connection.prepareCall(sql)) {
-      logger.info(() -> String.format("Loading session attribute details into SQL array variable... [%s %s]", this, maskedSessionId));
+      logger.fine(() -> String.format("Loading session attribute details into SQL array variable... [%s %s]", this, maskedSessionId));
       Struct[] attributeStructs = new Struct[sessionAttributes.size()];
       int i = 0;
       for (StoreAttribute attribute : sessionAttributes) {
@@ -137,7 +137,7 @@ public class AuthAttributesDao {
       }
       attributeArray = connection.createArrayOf(schemaName + "ATTRIBUTES.SESSION_ATTRIBUTE", attributeStructs);
 
-      logger.info(() -> String.format("Calling stored procedure... [%s %s]", this, maskedSessionId));
+      logger.fine(() -> String.format("Calling stored procedure... [%s %s]", this, maskedSessionId));
       statement.setString(1, sessionId);
       statement.setArray(2, attributeArray);
       statement.execute();
