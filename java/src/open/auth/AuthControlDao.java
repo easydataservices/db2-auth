@@ -65,7 +65,7 @@ public class AuthControlDao {
 
     logger.finer(() -> String.format("ENTRY %s %s", this, maskedSessionId));
     Struct sessionConfigStruct = connection.createStruct(schemaName + ".CONTROL.SESSION_CONFIG", sessionConfig);
-    String sql = "CALL " + schemaName + ".control.change_sessiom_config(?, ?)";
+    String sql = "CALL " + schemaName + ".control.change_session_config(?, ?)";
     try (CallableStatement statement = connection.prepareCall(sql)) {
       logger.fine(() -> String.format("Calling stored procedure... [%s %s]", this, maskedSessionId));
       statement.setString(1, sessionId);
