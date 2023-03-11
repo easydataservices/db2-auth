@@ -60,7 +60,7 @@ public class AuthControlDao {
    * @param sessionId Session identifier of authenticated session.
    * @param sessionConfig Object array of configuration properties (for row type CONTROL.SESSION_CONFIG).
    */
-  public void changeSessionConfig(String sessionId, String authName, Object[] sessionConfig) throws SQLException {
+  public void changeSessionConfig(String sessionId, Object[] sessionConfig) throws SQLException {
     final String maskedSessionId = Mask.last(sessionId, 4);
 
     logger.finer(() -> String.format("ENTRY %s %s", this, maskedSessionId));
