@@ -37,7 +37,7 @@ public class AuthSessionDao {
   /**
    * Retrieve the specified session.
    * @param sessionId StoreSession identifier.
-   * @return Object array of session properties (for row type SESSION.SESSION_INFO).
+   * @return Store session object; {@code null} if no session is retrieved.
    */
   public StoreSession getSession(String sessionId) throws SQLException {
     final String maskedSessionId = Mask.last(sessionId, 4);
@@ -54,20 +54,22 @@ public class AuthSessionDao {
       logger.fine(() -> String.format("Getting return values... [%s %s]", this, maskedSessionId));
       Struct sessionInfoStruct = (Struct) statement.getObject(2);
       Object[] sessionInfoObject = sessionInfoStruct.getAttributes();
-      session = new StoreSession(sessionId);
-      session.setCreatedTime(TimeConvert.toUtcInstant((Timestamp) sessionInfoObject[0]));
-      session.setLastAccessedTime(TimeConvert.toUtcInstant((Timestamp) sessionInfoObject[1]));
-      if (sessionInfoObject[2] != null) {
-        session.setLastAuthenticatedTime(TimeConvert.toUtcInstant((Timestamp) sessionInfoObject[2]));
+      if (sessionInfoObject[0] != null) {
+        session = new StoreSession(sessionId);
+        session.setCreatedTime(TimeConvert.toUtcInstant((Timestamp) sessionInfoObject[0]));
+        session.setLastAccessedTime(TimeConvert.toUtcInstant((Timestamp) sessionInfoObject[1]));
+        if (sessionInfoObject[2] != null) {
+          session.setLastAuthenticatedTime(TimeConvert.toUtcInstant((Timestamp) sessionInfoObject[2]));
+        }
+        session.setMaxIdleMinutes(((Integer) sessionInfoObject[3]).shortValue());
+        session.setMaxAuthenticationMinutes(((Integer) sessionInfoObject[4]).shortValue());
+        session.setExpiryTime(TimeConvert.toUtcInstant((Timestamp) sessionInfoObject[5]));
+        session.setAuthName(((String) sessionInfoObject[6]));
+        session.setPropertiesJson(((String) sessionInfoObject[7]));
+        session.setAuthenticated(((boolean) sessionInfoObject[8]));
+        session.setExpired(((boolean) sessionInfoObject[9]));
+        session.setAttributeGenerationId(((int) sessionInfoObject[10]));      
       }
-      session.setMaxIdleMinutes(((Integer) sessionInfoObject[3]).shortValue());
-      session.setMaxAuthenticationMinutes(((Integer) sessionInfoObject[4]).shortValue());
-      session.setExpiryTime(TimeConvert.toUtcInstant((Timestamp) sessionInfoObject[5]));
-      session.setAuthName(((String) sessionInfoObject[6]));
-      session.setPropertiesJson(((String) sessionInfoObject[7]));
-      session.setAuthenticated(((boolean) sessionInfoObject[8]));
-      session.setExpired(((boolean) sessionInfoObject[9]));
-      session.setAttributeGenerationId(((int) sessionInfoObject[10]));
     }
     catch (Exception exception) {
       logger.severe(() -> String.format("RETURN %s %s %s", this, maskedSessionId, exception.getMessage()));
