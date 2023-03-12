@@ -114,7 +114,7 @@ public class AuthControlDao {
     try (CallableStatement statement = connection.prepareCall(sql)) {
       logger.fine(() -> String.format("Calling stored procedure... [%s %s]", this, maskedSessionId));
       statement.setString(1, sessionId);
-      statement.setString(1, newSessionId);
+      statement.setString(2, newSessionId);
       statement.execute();
     }
     catch (Exception exception) {
