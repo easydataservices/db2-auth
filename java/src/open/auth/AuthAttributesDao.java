@@ -65,29 +65,31 @@ public class AuthAttributesDao {
 
       logger.fine(() -> String.format("Building session attribute list... [%s %s]", this, maskedSessionId));
       Array attributeArray = statement.getArray(3);
-      Struct[] attributeStructs = (Struct[]) attributeArray.getArray();
-      for (int i = 0; i < attributeStructs.length; i++) {
-        Struct attributeStruct = attributeStructs[i];
-        Object[] attributeObject = attributeStruct.getAttributes();
-        StoreAttribute attribute = new StoreAttribute((String) attributeObject[0]);
-        Blob blob = (Blob) attributeObject[1];
-        try (
-          InputStream inputStream = blob.getBinaryStream();
-          ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);  
-        )
-        {
-          Object object = objectInputStream.readObject();
-          attribute.setObject(object);  
-          sessionAttributes.add(attribute);  
-        }
-        catch (ClassNotFoundException exception) {
-          logger.severe(() -> String.format("RETURN %s %s %s", this, maskedSessionId, exception.getMessage()));
-          throw new SQLException("ClassNotFoundException occurred when converting attribute object!", "72099");
-        }
-        catch (IOException exception) {
-          logger.severe(() -> String.format("RETURN %s %s %s", this, maskedSessionId, exception.getMessage()));
-          throw new SQLException("IOException occurred when converting attribute object!", "72099");
-        }    
+      if (attributeArray != null) {
+        Struct[] attributeStructs = (Struct[]) attributeArray.getArray();
+        for (int i = 0; i < attributeStructs.length; i++) {
+          Struct attributeStruct = attributeStructs[i];
+          Object[] attributeObject = attributeStruct.getAttributes();
+          StoreAttribute attribute = new StoreAttribute((String) attributeObject[0]);
+          Blob blob = (Blob) attributeObject[1];
+          try (
+            InputStream inputStream = blob.getBinaryStream();
+            ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);  
+          )
+          {
+            Object object = objectInputStream.readObject();
+            attribute.setObject(object);  
+            sessionAttributes.add(attribute);  
+          }
+          catch (ClassNotFoundException exception) {
+            logger.severe(() -> String.format("RETURN %s %s %s", this, maskedSessionId, exception.getMessage()));
+            throw new SQLException("ClassNotFoundException occurred when converting attribute object!", "72099");
+          }
+          catch (IOException exception) {
+            logger.severe(() -> String.format("RETURN %s %s %s", this, maskedSessionId, exception.getMessage()));
+            throw new SQLException("IOException occurred when converting attribute object!", "72099");
+          }    
+        }  
       }
     }
     catch (SQLException exception) {
