@@ -1,7 +1,9 @@
 # _About the AUTH Service_
 
+<img src="docs/auth_service_overview.png" title="AUTH Service overview" width="70%"/>
+
 # Synopsis
-The AUTH Service provides an off-the-peg solution for passing session authentication details to Db2 applications, and optionally for saving and retrieving session attributes. The design supports high workload environments and 24x7 availability.
+The AUTH Service is an off-the-peg solution that enables session details to be persisted by and retreived from a Db2 for LUW database. Optionally, session attributes can also be persisted and retrieved. The design supports high workload environments and 24x7 availability.
 
 Check the [AUTH Service Project Blog](https://github.com/easydataservices/db2-auth/wiki/Project-Blog) for latest news.
 
@@ -15,7 +17,7 @@ The author has seen designs for session management within the database that have
 * LOB performance: The service uses table partitioning to minimise both likelihood and severity of contention for buddy space during concurrent LOB updates.
 
 # Project status
-Code is currently in active development, and not yet completed.
+In development, no release to date. See blog for minor updates.
 
 # Further documentation
 
