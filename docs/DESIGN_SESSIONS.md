@@ -29,19 +29,24 @@ There are two modes of operation, depending of the value of column IS_SWITCHING:
 
     > Note: Partition switching involves some additional overhead, with both view partitions accessed throughout the operation. It makes sense to schedule switches during less busy periods.
 
-## Lock contention
-The AUTH service is designed carefully to minimise lock contention.
+## Locking strategy
+The AUTH service is designed carefully to minimise lock contention:
+* All accesses to session and attribute data start by locking the session row in table SESSIO.
+* This single lock* is a very lightweight solution. It acts to prevent conflicting updates to the session data by any concurrent process.
+* Because the session lock acts as gatekeeper to all data for that session, there is no need to lock attribute rows.
 
-Generally, the only serialisation of lock requests (lock waits) occurs if multiple processes access data for the same session concurrently. Processes are designed to avoid deadlocks and to retain locks for minimal duration, so even in this rare situation lock waits should not be noticeable to users.
+    _* During partition switching the row lock may be placed in both partitions._
+
+Generally, the only serialisation of lock requests (lock waits) occurs if multiple processes access data for the same session concurrently. The locking strategy avoids any possibility of deadlocks. Locks are retained for minimal duration, so even in the rare case of concurrent access requests lock waits should not be noticeable to users.
 
 In only one case can locks for one session affect another - when adding a new session. Due to next key locking, Db2 will place a read lock on the next key, which belongs to another session. Again, this lock will be momentary and is unlikely to be noticeable in the event of a concurrent access to that other session. Moreover, the probability of this type of contention reduces as the number of existing sessions in table SESSIO grows. Due to the very brief duration that locks are held it is unlikely to be necessary, but a strategy for reducing the probability still further would be to retain logically deleted session rows.
 
 # Interface
 
 ## Overview
-The following modules contain routines used for core session management:
-* CONTROL: Routines for adding new sessions, for removing old sessions, and for reviving expired sessions.
-* VALIDATE: Routines for validating an existing session.
+The following modules contain routines used for session management:
+* CONTROL: Routines for adding, updating and removing sessions.
+* SESSION: Routines for retrieving sessions.
 * ADMIN: Routines for housekeeping.
 
 ## Module CONTROL
@@ -138,9 +143,3 @@ Procedure START_SESSION_SWITCH initiates session partition switching.
 
 ## Procedure START_SESSION_SWITCH
 Procedure END_SESSION_SWITCH finalises session partition switching.
-
-## Procedure START_ATTRIBUTE_SWITCH
-Procedure START_ATTRIBUTE_SWITCH initiates attribute partition switching.
-
-## Procedure END_ATTRIBUTE_SWITCH
-Procedure END_ATTRIBUTE_SWITCH finalises attribute partition switching.

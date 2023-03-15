@@ -16,8 +16,17 @@ The author has seen designs for session management within the database that have
 * Housekeeping: The service is designed for full housekeeping without affecting availability.
 * LOB performance: The service uses table partitioning to minimise both likelihood and severity of contention for buddy space during concurrent LOB updates.
 
+# Interface
+The design is implemented with database modules, each covering a specific functional area:
+* CONTROL: Routines for adding, updating and removing sessions.
+* SESSION: Routines for retrieving sessions.
+* ATTRIBUTES: Routines for persisting and retrieving session attributes.
+* ADMIN: Routines for housekeeping.
+
+A corresponding Java DAO class is provided for the first 3 modules listed above (the ADMIN module is a work in progress).
+
 # Project status
-In development, no release to date. See blog for minor updates.
+In development, at an advanced stage but no official release to date. See blog for minor updates.
 
 # Further documentation
 

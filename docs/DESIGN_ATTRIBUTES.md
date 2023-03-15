@@ -42,7 +42,7 @@ Db2 LOBs over the size that can be in-lined are stored separately from regular d
 
 ## Overview
 The following modules contain routines used for session attribute management:
-* ATTRIBUTES: Routines for saving and retrieving session attributes.
+* ATTRIBUTES: Routines for persisting and retrieving session attributes.
 * ADMIN: Routines for housekeeping.
 
 ## Module ATTRIBUTES
@@ -73,4 +73,12 @@ Procedure SAVE_ATTRIBUTES saves attributes for the specified session (P_SESSION_
 ### Procedure GET_ATTRIBUTES
 Procedure GET_ATTRIBUTES retrieves all attributes for the specified session (P_SESSION_ID). The attributes (P_SESSION_ATTRIBUTES) are returned in an array. There are 2 modes of operation, depending on P_SINCE_GENERATION_ID:
 1. When P_SINCE_GENERATION_ID is NULL, the procedure returns all attribute names. Object data is not returned (returns NULL). This mode is used to retrieve a list of all current attribute names. To detect deletions, the caller can compare the attribute names returned with the list of attribute names already known to the HttpSession.
-2. When P_SINCE_GENERATION_ID has a value, the procedure returns only attributes with a later GENERATION_ID. Object data is also returned. This can be used to retrieve a delta of attribute inserts and updates. 
+2. When P_SINCE_GENERATION_ID has a value, the procedure returns only attributes with a later GENERATION_ID. Object data is also returned. This can be used to retrieve a delta of attribute inserts and updates.
+
+## Module ADMIN
+
+## Procedure START_ATTRIBUTE_SWITCH
+Procedure START_ATTRIBUTE_SWITCH initiates attribute partition switching.
+
+## Procedure END_ATTRIBUTE_SWITCH
+Procedure END_ATTRIBUTE_SWITCH finalises attribute partition switching.
