@@ -7,7 +7,11 @@ BEGIN
   DECLARE v_partition_id CHAR(1);
   DECLARE v_is_switching BOOLEAN;
   DECLARE v_session_internal_id BIGINT;
-  DECLARE v_is_already_used BOOLEAN;
+
+  DECLARE CONTINUE HANDLER FOR SQLSTATE '23505', SQLSTATE '23513'
+  BEGIN
+    SIGNAL SQLSTATE '72004' SET MESSAGE_TEXT = 'Session identifier already in use';
+  END;
 
   -- Retrieve UTC timestamp and session partition control information.
   SET (v_utc, v_partition_id, v_is_switching) =
@@ -50,52 +54,21 @@ BEGIN
     SIGNAL SQLSTATE '72002' SET MESSAGE_TEXT = 'Session does not exist';
   END IF;
 
-  -- Look up the new session in the active partition, and block concurrent processes from creating it.
-  SET v_is_already_used =
-    (
-      SELECT
-        TRUE
-      FROM
-        sessio 
-      WHERE
-        session_id = p_new_session_id AND partition_id = v_partition_id AND deleted_ts IS NULL
-      WITH RR USE AND KEEP EXCLUSIVE LOCKS
-    );
-
-  -- If partitions are switching and the new session was not found previously then look up the new session in the other
-  -- partition, and block concurrent processes from creating it.
-  IF v_is_switching AND v_is_already_used IS NULL THEN 
-    SET v_is_already_used = 
-      (
-        SELECT
-          TRUE
-        FROM
-          sessio 
-        WHERE
-          session_id = p_new_session_id AND partition_id != v_partition_id AND deleted_ts IS NULL
-        WITH RR USE AND KEEP EXCLUSIVE LOCKS
-      );
-  END IF;
-
-  -- Exit with error if the new session already exists.
-  IF v_is_already_used IS TRUE THEN
-    SIGNAL SQLSTATE '72001' SET MESSAGE_TEXT = 'Session already exists';
-  END IF;
-
   -- Update session.
+  -- Called procedures fail if locks cannot be acquired within 1 second. This avoids possible deadlock contention with
+  -- other processes.
   IF v_is_switching THEN
-    UPDATE sessio
-    SET
-      partition_id = common.new_partition_id(TRUE, v_partition_id),
-      session_id = p_new_session_id
-    WHERE
-      session_internal_id = v_session_internal_id;
+    -- Move session to old partition.
+    CALL aux_upsepa(v_session_internal_id, v_partition_id);
+
+   -- Update session identifier. Fails if another session is using the identifier in the old partition.
+    CALL aux_upseid(v_session_internal_id, v_partition_id, p_new_session_id);
+
+   -- Move session to new partition. Fails if another session is using the identifier in the new partition.
+    CALL aux_upsepa(v_session_internal_id, common.new_partition_id(TRUE, v_partition_id));    
   ELSE
-    UPDATE sessio
-    SET
-      session_id = p_new_session_id
-    WHERE
-      session_internal_id = v_session_internal_id AND partition_id = v_partition_id;
+   -- Update session identifier. Fails if another session is using the identifier in the current partition.
+    CALL aux_upseid(v_session_internal_id, v_partition_id, p_new_session_id);
   END IF;
 
   -- Fail if the transaction has taken more than 5 seconds.

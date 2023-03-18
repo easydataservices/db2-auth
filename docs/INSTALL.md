@@ -45,6 +45,8 @@ db2 -td@ -f schema/common/new_partition_id.sql
 db2 -td@ -f schema/common/expiry_ts.sql
 db2 -td@ -f schema/common/check_json.sql
 db2 -td@ -f schema/control/aux_chsecf.sql
+db2 -td@ -f schema/control/aux_upseid.sql
+db2 -td@ -f schema/control/aux_upsepa.sql
 db2 -td@ -f schema/control/add_session.sql
 db2 -td@ -f schema/control/change_session_config.sql
 db2 -td@ -f schema/control/change_session_id.sql

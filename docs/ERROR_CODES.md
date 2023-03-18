@@ -8,6 +8,7 @@ AUTH Service routines use a standard set of user-defined error codes, summarised
 | 72001    | Session already exists | A session should only be persisted when it is created. |
 | 72002    | Session does not exist | Unknown session. This is most likely to indicate a program error. |
 | 72003    | Unsupported NULL input | One or more input parameters contain unsupported NULLs. This indicates a program error. |
+| 72004    | Session identifier already in use | A session identifier cannot be changed to one used by another session. |
 | 72009    | Timeout | Execution did not complete within the maximum allowed time (5 seconds). |
 | 72011    | AUTH_NAME cannot be changed | Once set, the user name cannot be changed. |
 | 72012    | AUTH_NAME cannot be empty | The user name can be NULL but cannot be blank. |
