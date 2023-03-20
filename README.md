@@ -5,6 +5,9 @@
 # Synopsis
 The AUTH Service is an off-the-peg solution that enables session details to be persisted by and retreived from a Db2 for LUW database. Optionally, session attributes can also be persisted and retrieved. The design supports high workload environments and 24x7 availability.
 
+## See also
+See https://easydataservices.github.io/db2-auth/java/javadoc/index.html for Javadoc.
+
 Check the [AUTH Service Project Blog](https://github.com/easydataservices/db2-auth/wiki/Project-Blog) for latest news.
 
 # Design features
