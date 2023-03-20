@@ -12,14 +12,14 @@ public class StoreAttribute {
 
   /**
    * Constructor.
-   * @param attributeId Attribute identifier. This should identify a session attribute uniquely.
+   * @param attributeId Attribute identifier. Identifies a session attribute uniquely within the session.
    */
   public StoreAttribute(String attributeName) {
     this.attributeName = attributeName;
   }
 
   /**
-   * Return the attribute name. This should identify a session attribute uniquely.
+   * Return the attribute name. Identifies a session attribute uniquely within the session.
    * @return Attribute name.
    */
   public String getAttributeName() {

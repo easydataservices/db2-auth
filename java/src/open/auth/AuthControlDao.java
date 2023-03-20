@@ -55,8 +55,8 @@ public class AuthControlDao {
   }
 
   /**
-   * Mark an existing session authenticated.
-   * Prior to use, {@link StoreSession#setAuthId} must have been called to set the user name that was authenticated.
+   * Update session configuration. This is normally used to mark a session authenticated (or reauthenticated), after
+   * {@link StoreSession#setAuthName setAuthName} has been used to set the authorisation name.
    * @param sessionId Session identifier of authenticated session.
    * @param sessionConfig Object array of configuration properties (for row type CONTROL.SESSION_CONFIG).
    */

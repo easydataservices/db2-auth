@@ -46,7 +46,7 @@ public class StoreSession {
   }
 
   /**
-   * Return the time that the session was last accessed by a user web request.
+   * Return the time that the session was last accessed by a user request.
    * @return Last accessed time.
    */
   public Instant getLastAccessedTime() {
@@ -102,7 +102,7 @@ public class StoreSession {
   }
 
   /**
-   * Return boolean flag indication whether or not a session user is authenticated.
+   * Return flag indicating whether or not a session user is authenticated.
    * @return {@true} if the session user is authenticated; otherwise {@false}.
    */
   public boolean isAuthenticated() {
@@ -110,7 +110,7 @@ public class StoreSession {
   }
 
   /**
-   * Return boolean flag indication whether or not a session is expired.
+   * Return flag indicating whether or not a session is expired.
    * @return {@true} if the session is expired; otherwise {@false}.
    */
   public boolean isExpired() {
@@ -118,7 +118,7 @@ public class StoreSession {
   }
 
   /**
-   * Return latest (highest) attribute generation associated with the session.
+   * Return latest (highest) attribute generation associated with the session. The initial value is 0.
    * @return Latest attribute generation id.
    */
   public int getAttributeGenerationId() {
@@ -134,7 +134,7 @@ public class StoreSession {
   }
 
   /**
-   * Set the time that the session was last accessed by a user web request.
+   * Set the time that the session was last accessed by a user request.
    * @param lastAccessedTime Last accessed time.
    */
   protected void setLastAccessedTime(Instant lastAccessedTime) {
@@ -190,7 +190,7 @@ public class StoreSession {
   }
 
   /**
-   * Set boolean flag indication whether or not a session user is authenticated.
+   * Set flag indicating whether or not a session user is authenticated.
    * @param isAuthenticated {@true} if the session user is authenticated; otherwise {@false}.
    */
   protected void setAuthenticated(boolean isAuthenticated) {
@@ -198,7 +198,7 @@ public class StoreSession {
   }
 
   /**
-   * Set boolean flag indication whether or not a session is expired.
+   * Set flag indicating whether or not a session is expired.
    * @param isExpired {@true} if the session is expired; otherwise {@false}.
    */
   protected void setExpired(boolean isExpired) {

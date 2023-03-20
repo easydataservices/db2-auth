@@ -101,7 +101,8 @@ public class AuthAttributesDao {
   }
 
   /**
-   * Save attributes.
+   * Save attributes. The list of attributes passed can include both changed and unchanged attributes; however, passing only
+   * changes attributes is more efficient. Attributes passed with a {@code null} object are treated as deletions.
    * @param sessionId Session identifier.
    * @param sessionAttributes List of session attributes.
    */
