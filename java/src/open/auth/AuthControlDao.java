@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Struct;
 import java.util.logging.Logger;
+import com.easydataservices.open.auth.SessionConfig;
 import com.easydataservices.open.auth.util.Mask;
 
 /**
@@ -33,13 +34,13 @@ public class AuthControlDao {
   /**
    * Add a new session to the database.
    * @param sessionId Session identifier of new session.
-   * @param sessionConfig Object array of configuration properties (for row type CONTROL.SESSION_CONFIG).
+   * @param sessionConfig Object containing session configuration properties.
    */
-  public void addSession(String sessionId, Object[] sessionConfig) throws SQLException {
+  public void addSession(String sessionId, SessionConfig sessionConfig) throws SQLException {
     final String maskedSessionId = Mask.last(sessionId, 4);
 
     logger.finer(() -> String.format("ENTRY %s %s", this, maskedSessionId));
-    Struct sessionConfigStruct = connection.createStruct(schemaName + ".CONTROL.SESSION_CONFIG", sessionConfig);
+    Struct sessionConfigStruct = connection.createStruct(schemaName + ".CONTROL.SESSION_CONFIG", sessionConfig.getRowObject());
     String sql = "CALL " + schemaName + ".control.add_session(?, ?)";
     try (CallableStatement statement = connection.prepareCall(sql)) {
       logger.fine(() -> String.format("Calling stored procedure... [%s %s]", this, maskedSessionId));
@@ -58,13 +59,13 @@ public class AuthControlDao {
    * Update session configuration. This is normally used to mark a session authenticated (or reauthenticated), after
    * {@link StoreSession#setAuthName setAuthName} has been used to set the authorisation name.
    * @param sessionId Session identifier of authenticated session.
-   * @param sessionConfig Object array of configuration properties (for row type CONTROL.SESSION_CONFIG).
+   * @param sessionConfig Object containing session configuration properties.
    */
-  public void changeSessionConfig(String sessionId, Object[] sessionConfig) throws SQLException {
+  public void changeSessionConfig(String sessionId, SessionConfig sessionConfig) throws SQLException {
     final String maskedSessionId = Mask.last(sessionId, 4);
 
     logger.finer(() -> String.format("ENTRY %s %s", this, maskedSessionId));
-    Struct sessionConfigStruct = connection.createStruct(schemaName + ".CONTROL.SESSION_CONFIG", sessionConfig);
+    Struct sessionConfigStruct = connection.createStruct(schemaName + ".CONTROL.SESSION_CONFIG", sessionConfig.getRowObject());
     String sql = "CALL " + schemaName + ".control.change_session_config(?, ?)";
     try (CallableStatement statement = connection.prepareCall(sql)) {
       logger.fine(() -> String.format("Calling stored procedure... [%s %s]", this, maskedSessionId));
