@@ -1,10 +1,10 @@
 -- Procedure ATTRIBUTES.GET_ATTRIBUTES retrieves session attributes for the specified session identifier (P_SESSION_ID).
 -- Attribute names and generation are always returned.
--- The value of P_SINCE_GENERATION_ID determines whether or not the attribute object is returned:
--- 1. When 0, all attribute objects are returned.
--- 2. When NULL, no attribute objects are returned (all objects are NULL).
--- 3. When greater then 0, only objects for attributes whose generation is greater than P_SINCE_GENERATION_ID are returned.
--- The rules provide flexibility and support delta loadimg.
+-- The value of P_SINCE_GENERATION_ID determines whether the attribute object is returned, or NULL:
+-- 1. When NULL, no attribute objects are returned (return all attribute names).
+-- 2. When 0, all attribute objects are returned (full load).
+-- 3. When greater then 0, only objects for attributes with a generation greater than P_SINCE_GENERATION_ID are
+--    returned (delta load).
 ALTER MODULE attributes
 ADD PROCEDURE get_attributes
 (
@@ -80,7 +80,6 @@ BEGIN
   FOR r AS
     SELECT 
       attribute_name,
-      generation_id,
       CASE WHEN generation_id > p_since_generation_id THEN object END AS object
     FROM
       sesatt
@@ -103,7 +102,6 @@ BEGIN
     FOR r AS
       SELECT 
         attribute_name,
-        generation_id,
         CASE WHEN generation_id > p_since_generation_id THEN object END AS object
       FROM
         sesatt
