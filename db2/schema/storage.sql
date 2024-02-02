@@ -43,6 +43,8 @@ CREATE TABLE sesctl
   ORGANIZE BY ROW
   IN ts_sessio_dat INDEX IN ts_sessio_idx;
 
+CREATE ALIAS session_control FOR sesctl;
+
 ALTER TABLE sesctl
 ADD CONSTRAINT sesctl_pk PRIMARY KEY (singleton_id);
 
@@ -99,6 +101,8 @@ CREATE TABLE sessia
   ORGANIZE BY ROW
   IN ts_sessio_dat INDEX IN ts_sessio_idx;
 
+CREATE ALIAS session_a FOR sessia;
+
 ALTER TABLE sessia
   VOLATILE;
 
@@ -139,6 +143,8 @@ CREATE TABLE sessib
 )
   ORGANIZE BY ROW
   IN ts_sessio_dat INDEX IN ts_sessio_idx;
+
+CREATE ALIAS session_b FOR sessib;
 
 ALTER TABLE sessib
   VOLATILE;
@@ -213,6 +219,8 @@ FROM
   sessib
 WITH ROW MOVEMENT;
 
+CREATE ALIAS session FOR sessio;
+
 -- Session Attribute table A
 CREATE TABLE sesata
 (
@@ -248,6 +256,8 @@ CREATE TABLE sesata
     STARTING 18 ENDING 18,
     STARTING 19 ENDING 19
   );
+
+CREATE ALIAS session_attribute_a FOR sesata;
 
 ALTER TABLE sesata
 VOLATILE;
@@ -302,6 +312,8 @@ CREATE TABLE sesatb
     STARTING 19 ENDING 19
   );
 
+CREATE ALIAS session_attribute_b FOR sesatb;
+
 ALTER TABLE sesatb
 VOLATILE;
 
@@ -349,3 +361,5 @@ SELECT
 FROM
   sesatb
 WITH ROW MOVEMENT;
+
+CREATE ALIAS session_attribute FOR sesatt;
