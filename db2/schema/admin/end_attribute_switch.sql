@@ -4,19 +4,17 @@ ADD PROCEDURE end_attribute_switch()
   AUTONOMOUS
 BEGIN
   DECLARE v_utc TIMESTAMP(0);
-  DECLARE v_attribute_partition_id CHAR(1);
   DECLARE v_session_partition_id CHAR(1);
+  DECLARE v_attribute_partition_id CHAR(1);
   DECLARE v_attribute_is_switching BOOLEAN;
-  DECLARE v_session_is_switching BOOLEAN;
   DECLARE v_attribute_count BIGINT;
 
   -- Retrieve UTC timestamp and session partition control information.
-  SET (v_utc, v_session_partition_id, v_session_is_switching, v_attribute_partition_id, v_attribute_is_switching) =
+  SET (v_utc, v_session_partition_id, v_attribute_partition_id, v_attribute_is_switching) =
     (
       SELECT
         CURRENT_TIMESTAMP - CURRENT_TIMEZONE,
         active_partition_id,
-        is_switching,
         attribute_active_partition_id,
         attribute_is_switching
       FROM
@@ -29,22 +27,21 @@ BEGIN
     SIGNAL SQLSTATE '72021' SET MESSAGE_TEXT = 'Switch is not started';
   END IF;
 
-  -- Count all rows in the active partition (ignoring logically deleted attributes).
+  -- Count all rows in the active partition (ignoring attributes for logically deleted sessions).
   SET v_attribute_count =
     (
       SELECT
         COUNT_BIG(*)
       FROM
         sesatt AS a
-          LEFT OUTER JOIN
-        (
-          SELECT * FROM sessio WHERE partition_id = common.new_partition_id(v_session_is_switching, v_session_partition_id)
-        ) AS s
+          INNER JOIN
+        sessio AS s
           ON
             s.session_internal_id = a.session_internal_id AND
-            s.deleted_ts IS NOT NULL
+            s.partition_id = v_session_partition_id AND
+            s.deleted_ts IS NULL
       WHERE
-        a.partition_id = v_attribute_partition_id AND s.session_internal_id IS NOT NULL
+        a.partition_id = v_attribute_partition_id
       WITH CS
     );
 

@@ -3,6 +3,13 @@ ALTER MODULE admin
 ADD PROCEDURE start_session_switch()
   AUTONOMOUS
 BEGIN ATOMIC
+  DECLARE v_attribute_is_switching BOOLEAN;
+
+  SET v_attribute_is_switching = (SELECT attribute_is_switching FROM sesctl WITH RS USE AND KEEP UPDATE LOCKS);
+  IF v_attribute_is_switching THEN
+    SIGNAL SQLSTATE '72023' SET MESSAGE_TEXT = 'Session and attribute switch cannot run in parallel';
+  END IF;
+
   UPDATE sesctl
   SET
     is_switching = TRUE,

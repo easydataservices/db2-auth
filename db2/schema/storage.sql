@@ -79,6 +79,9 @@ ADD CONSTRAINT sesctl_cc09 CHECK
   (NOT attribute_is_switching AND attribute_switch_start_ts IS NULL)
 );
 
+ALTER TABLE sesctl
+ADD CONSTRAINT sesctl_cc10 CHECK (NOT is_switching OR NOT attribute_is_switching);
+
 INSERT INTO sesctl(singleton_id) VALUES 1;
 
 -- Session table A
