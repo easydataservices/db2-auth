@@ -1,21 +1,23 @@
 # _AUTH Service design for Session Attribute Management_
 
+> Note: Table names described below are mostly aliases. Actual table names and their related objects (indexes and constraints) use a short 6 letter abbreviation. You can refer to a table by its abbreviated name or by its alias.
+
 # Schema
 Schema AUTH contains tables used for core session management (described in [DESIGN_SESSIONS](DESIGN_SESSIONS.md)).
 
 Session attribute management extends the schema to allow one or more session attributes to be persisted for any active session.
 
-## Table SESATT
-Table SESATT stores session attributes. The attributes are stored as binary large objects (binary LOBs aka BLOBs).
+## Table SESSION_ATTRIBUTE
+Table SESSION_ATTRIBUTE (short name SESATT) stores session attributes. The attributes are stored as binary large objects (binary LOBs aka BLOBs).
 
-To maximise availability, the table is in fact a UNION ALL view, implementing view partitioning as described above (see table SESSIO). The view references two view partitions, physical tables SESATA and SESATB. The value of column PARTITION_ID determines which view partition a row is stored in; rows with value ``A`` are stored in table SESATA, and rows with value ``B`` are stored in table SESATB.
+To maximise availability, the table is in fact a UNION ALL view, implementing view partitioning as described above (see table SESSIO). The view references two view partitions, physical tables SESSION_ATTRIBUTE_A (short name SESATA) and SESSION_ATTRIBUTE_B (short name SESATB). The value of column PARTITION_ID determines which view partition a row is stored in; rows with value ``A`` are stored in table SESSION_ATTRIBUTE_A, and rows with value ``B`` are stored in table SESSION_ATTRIBUTE_B.
 
-In addition to view partitioning, the SESATT physical design employs standard Db2 table partitioning in tables SESATA and SESATB as a second tier of partitioning. The reason for this second tier is not availability but performance. Both tables must have the same number of table partitions (matching the value of column NUM_ATTRIBUTE_PARTITIONS in table SESCTL). The default implementation is defined with 20 partitions each. The partitioning key is column ATTRIBUTE_PARTITION_NUM.
+In addition to view partitioning, the SESSION_ATTRIBUTE physical design employs standard Db2 table partitioning in tables SESSION_ATTRIBUTE_A and SESSION_ATTRIBUTE_B as a second tier of partitioning. The reason for this second tier is not availability but performance. Both tables must have the same number of table partitions (matching the value of column NUM_ATTRIBUTE_PARTITIONS in table SESSION_CONTROL). The default implementation is defined with 20 partitions each. The partitioning key is column ATTRIBUTE_PARTITION_NUM.
 
 # Design considerations
 
 ## Session storage and partition switching
-There are two modes of operation, depending of the value of column ATTRIBUTE_IS_SWITCHING in table SESCTL:
+There are two modes of operation, depending of the value of column ATTRIBUTE_IS_SWITCHING in table SESSION_CONTROL:
 
 * During normal operation (when ATTRIBUTE_IS_SWITCHING is ``false``), the value (``A`` or ``B``) of column ATTRIBUTE_ACTIVE_PARTITION_ID designates which of the two view partitions is the active partition. All active session information will be held in that view partition. The other partition will either be empty or will contain only logically deleted session attribute data.
 
@@ -46,7 +48,7 @@ The following modules contain routines used for session attribute management:
 * ADMIN: Routines for housekeeping.
 
 ## Module ATTRIBUTES
-Module ATTRIBUTES contains routines for saving and retrieving session attributes. The attributes are stored in table SESATT (described above).
+Module ATTRIBUTES contains routines for saving and retrieving session attributes. The attributes are stored in table SESSION_ATTRIBUTE (described above).
 
 Module routines use array type SESSION_ATTRIBUTE_ARRAY for passing attributes. The definition of this type is:
 
