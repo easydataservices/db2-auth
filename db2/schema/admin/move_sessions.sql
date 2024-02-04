@@ -64,6 +64,9 @@ BEGIN
         CALL dbms_lock.sleep(v_session_move_sleep_seconds);
       END IF;
       CALL get_control_info;
+      IF v_is_move_stop_requested THEN
+        RETURN 1;
+      END IF;      
     END IF;
   END FOR;
 END@
