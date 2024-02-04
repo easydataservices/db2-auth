@@ -26,11 +26,9 @@ BEGIN
     END IF;
   END;
 
-  -- Retrieve UTC timestamp and control information.
+  -- Retrieve UTC timestamp and static control information.
   SET (v_utc, v_partition_id, v_is_switching) =
     (SELECT CURRENT_TIMESTAMP - CURRENT_TIMEZONE, active_partition_id, is_switching FROM sesctl WITH CS);
-  SET v_new_partition_id = common.new_partition_id(TRUE, v_partition_id);
-  CALL get_control_info;
 
   -- Exit with error if switch is not started.
   IF NOT v_is_switching THEN
@@ -40,7 +38,11 @@ BEGIN
   -- Reset the move stop requested flag.
   UPDATE sesctl SET is_move_stop_requested = FALSE;
 
-  -- Move sessions from the active partition to the new partition...
+  -- Derive the new partition identifier, and get dynamic control information.
+  SET v_new_partition_id = common.new_partition_id(TRUE, v_partition_id);
+  CALL get_control_info;
+
+  -- Move sessions (except deleted ones) from the active partition to the new partition...
   FOR r AS c1 CURSOR WITH HOLD FOR
     SELECT session_internal_id FROM sessio WHERE partition_id = v_partition_id AND deleted_ts IS NULL WITH CS
   DO
@@ -49,8 +51,9 @@ BEGIN
     SET
       partition_id = v_new_partition_id
     WHERE
-      session_internal_id = r.session_internal_id
-    NOWAIT;
+      session_internal_id = r.session_internal_id AND
+      partition_id = v_partition_id
+    SKIP LOCKED;
 
     -- Check commit limit and perform commit control processing.
     SET v_commit_count = v_commit_count + 1;
