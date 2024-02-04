@@ -252,7 +252,7 @@ CREATE TABLE sesata
   object BLOB(2M) INLINE LENGTH 32000
 )
   ORGANIZE BY ROW
-  IN ts_sessio_dat INDEX IN ts_sessio_idx
+  IN ts_sessio_dat INDEX IN ts_sessio_idx LONG IN ts_sessio_lob
   PARTITION BY (attribute_partition_num)
   (
     STARTING 0 ENDING 0,

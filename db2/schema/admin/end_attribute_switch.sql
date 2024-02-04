@@ -3,20 +3,16 @@ ALTER MODULE admin
 ADD PROCEDURE end_attribute_switch()
   AUTONOMOUS
 BEGIN
-  DECLARE v_utc TIMESTAMP(0);
   DECLARE v_session_partition_id CHAR(1);
   DECLARE v_attribute_partition_id CHAR(1);
   DECLARE v_attribute_is_switching BOOLEAN;
   DECLARE v_attribute_count BIGINT;
 
-  -- Retrieve UTC timestamp and session partition control information.
-  SET (v_utc, v_session_partition_id, v_attribute_partition_id, v_attribute_is_switching) =
+  -- Retrieve session partition control information.
+  SET (v_session_partition_id, v_attribute_partition_id, v_attribute_is_switching) =
     (
       SELECT
-        CURRENT_TIMESTAMP - CURRENT_TIMEZONE,
-        active_partition_id,
-        attribute_active_partition_id,
-        attribute_is_switching
+        active_partition_id, attribute_active_partition_id, attribute_is_switching
       FROM
         sesctl
       WITH RS USE AND KEEP UPDATE LOCKS

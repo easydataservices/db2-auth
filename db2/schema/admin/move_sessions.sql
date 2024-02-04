@@ -2,7 +2,6 @@
 ALTER MODULE admin
 ADD PROCEDURE move_sessions()
 BEGIN
-  DECLARE v_utc TIMESTAMP(0);
   DECLARE v_partition_id CHAR(1);
   DECLARE v_new_partition_id CHAR(1);
   DECLARE v_is_switching BOOLEAN;
@@ -26,9 +25,9 @@ BEGIN
     END IF;
   END;
 
-  -- Retrieve UTC timestamp and static control information.
-  SET (v_utc, v_partition_id, v_is_switching) =
-    (SELECT CURRENT_TIMESTAMP - CURRENT_TIMEZONE, active_partition_id, is_switching FROM sesctl WITH CS);
+  -- Retrieve static control information.
+  SET (v_partition_id, v_is_switching) =
+    (SELECT active_partition_id, is_switching FROM sesctl WITH CS);
 
   -- Exit with error if switch is not started.
   IF NOT v_is_switching THEN

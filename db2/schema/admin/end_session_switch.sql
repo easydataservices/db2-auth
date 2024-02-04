@@ -3,15 +3,14 @@ ALTER MODULE admin
 ADD PROCEDURE end_session_switch()
   AUTONOMOUS
 BEGIN
-  DECLARE v_utc TIMESTAMP(0);
   DECLARE v_partition_id CHAR(1);
   DECLARE v_is_switching BOOLEAN;
   DECLARE v_session_count BIGINT;
 
-  -- Retrieve UTC timestamp and session partition control information.
-  SET (v_utc, v_partition_id, v_is_switching) =
+  -- Retrieve session partition control information.
+  SET (v_partition_id, v_is_switching) =
     (
-      SELECT CURRENT_TIMESTAMP - CURRENT_TIMEZONE, active_partition_id, is_switching FROM sesctl
+      SELECT active_partition_id, is_switching FROM sesctl
       WITH RS USE AND KEEP UPDATE LOCKS
     );
 

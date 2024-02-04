@@ -2,7 +2,6 @@
 ALTER MODULE admin
 ADD PROCEDURE move_attributes()
 BEGIN
-  DECLARE v_utc TIMESTAMP(0);
   DECLARE v_session_partition_id CHAR(1);
   DECLARE v_attribute_partition_id CHAR(1);
   DECLARE v_new_attribute_partition_id CHAR(1);
@@ -27,11 +26,11 @@ BEGIN
     END IF;
   END;
 
-  -- Retrieve UTC timestamp and static control information.
-  SET (v_utc, v_session_partition_id, v_attribute_partition_id, v_is_switching) =
+  -- Retrieve static control information.
+  SET (v_session_partition_id, v_attribute_partition_id, v_is_switching) =
     (
       SELECT
-        CURRENT_TIMESTAMP - CURRENT_TIMEZONE, active_partition_id, attribute_active_partition_id, attribute_is_switching
+        active_partition_id, attribute_active_partition_id, attribute_is_switching
       FROM
         sesctl
       WITH CS
