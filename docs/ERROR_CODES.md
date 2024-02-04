@@ -17,4 +17,5 @@ AUTH Service routines use a standard set of user-defined error codes, summarised
 | 72021    | Switch is not started | Attempt to end a non-existent switch operation. |
 | 72022    | Active partition is not empty | To end a switch operation, the old active partition can contain no sessions (except logically deleted sessions). |
 | 72023    | Session and attribute switch cannot run in parallel | Switches must be run at separate times. |
+| 72091   | Partition switch completed unexpectedly | The partition switch completed before the move completed.|
 | 72099   | General error | JDBC method catch-all, used for any error rethrown as an SQLException. |

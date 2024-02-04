@@ -38,7 +38,12 @@ CREATE TABLE sesctl
   switch_start_ts TIMESTAMP(0),
   attribute_active_partition_id CHAR(1) NOT NULL DEFAULT 'A',
   attribute_is_switching BOOLEAN NOT NULL DEFAULT FALSE,
-  attribute_switch_start_ts TIMESTAMP(0)
+  attribute_switch_start_ts TIMESTAMP(0),
+  session_move_commit_limit SMALLINT NOT NULL DEFAULT 50,
+  session_move_sleep_seconds SMALLINT NOT NULL DEFAULT 1,
+  attribute_move_commit_limit SMALLINT NOT NULL DEFAULT 10,
+  attribute_move_sleep_seconds SMALLINT NOT NULL DEFAULT 1,
+  is_move_stop_requested BOOLEAN NOT NULL DEFAULT FALSE
 )
   ORGANIZE BY ROW
   IN ts_sessio_dat INDEX IN ts_sessio_idx;
@@ -81,6 +86,18 @@ ADD CONSTRAINT sesctl_cc09 CHECK
 
 ALTER TABLE sesctl
 ADD CONSTRAINT sesctl_cc10 CHECK (NOT is_switching OR NOT attribute_is_switching);
+
+ALTER TABLE sesctl
+ADD CONSTRAINT sesctl_cc11 CHECK (session_move_commit_limit > 0);
+
+ALTER TABLE sesctl
+ADD CONSTRAINT sesctl_cc12 CHECK (session_move_sleep_seconds >= 0);
+
+ALTER TABLE sesctl
+ADD CONSTRAINT sesctl_cc13 CHECK (attribute_move_commit_limit > 0);
+
+ALTER TABLE sesctl
+ADD CONSTRAINT sesctl_cc14 CHECK (attribute_move_sleep_seconds >= 0);
 
 INSERT INTO sesctl(singleton_id) VALUES 1;
 
