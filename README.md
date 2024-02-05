@@ -9,13 +9,13 @@ The AUTH Service is an off-the-peg JDBC session and attribute store, enabling se
 See https://easydataservices.github.io/db2-auth/java/javadoc/index.html for Javadoc.
 
 # Design features
-The author has seen designs for session management within the database that have proved highly problematic in the real world. The AUTH Service includes several features to avoid potential pitfalls:
+The author has seen JDBC session management implementations that proved problematic in the real world. The AUTH Service includes several features to avoid potential pitfalls:
 
 * Availability: The service is designed for 24x7 operation.
 * Atomicity: Session attributes can be saved and retrieved in a single operation. This ensures consistency between related attributes when persisted.
-* Locking: The service is carefully coded to avoid deadlocks and to minimise lock contention (generally to avoid lock waits completely); also to ensure that rare unavoidable lock waits are momentary.
+* Locking: The service is coded to avoid deadlocks and to minimise lock contention (generally to avoid lock waits completely); also to ensure that rare unavoidable lock waits are momentary.
 * Housekeeping: The service is designed for full housekeeping without affecting availability.
-* LOB performance: The service uses table partitioning to minimise both likelihood and severity of contention for buddy space during concurrent LOB updates.
+* LOB performance: The service uses table partitioning to minimise likelihood and severity of contention for buddy space during concurrent LOB updates.
 * Lazy loading: JDBC methods support change detection and lazy loading of only changed attributes from the database. Although use of this feature is optional, it reduces load on the network and database if your attributes are large.
 
 # Interface
