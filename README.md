@@ -3,7 +3,7 @@
 <img src="docs/auth_service_overview.png" title="AUTH Service overview" width="70%"/>
 
 # Synopsis
-The AUTH Service is an off-the-peg JDBC session and attribute store, enabling sessions and session attributes to be persisted by and retrieved efficiently using a Db2 for LUW database as the persistent store. The design supports high workload environments and 24x7 availability.
+The AUTH Service is an off-the-peg JDBC session and attribute store, enabling sessions and session attributes to be persisted and retrieved efficiently, with a Db2 for LUW database as the persistent store. The design supports high workload environments and 24x7 availability.
 
 ## See also
 See https://easydataservices.github.io/db2-auth/java/javadoc/index.html for Javadoc.
