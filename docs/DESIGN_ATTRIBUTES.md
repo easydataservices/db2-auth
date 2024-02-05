@@ -77,10 +77,6 @@ Procedure GET_ATTRIBUTES retrieves all attributes for the specified session (P_S
 1. When P_SINCE_GENERATION_ID is NULL, the procedure returns all attribute names. Object data is not returned (returns NULL). This mode is used to retrieve a list of all current attribute names. To detect deletions, the caller can compare the attribute names returned with the list of attribute names already known to the HttpSession.
 2. When P_SINCE_GENERATION_ID has a value, the procedure returns only attributes with a later GENERATION_ID. Object data is also returned. This can be used to retrieve a delta of attribute inserts and updates.
 
-## Module ADMIN
+# Partition switching
 
-## Procedure START_ATTRIBUTE_SWITCH
-Procedure START_ATTRIBUTE_SWITCH initiates attribute partition switching.
-
-## Procedure END_ATTRIBUTE_SWITCH
-Procedure END_ATTRIBUTE_SWITCH finalises attribute partition switching.
+Support for switching active partitions is described in [ADMIN](ADMIN.md)).

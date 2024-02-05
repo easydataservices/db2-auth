@@ -55,8 +55,12 @@ db2 -td@ -f schema/session/get_session.sql
 db2 -td@ -f schema/attributes/get_attributes.sql
 db2 -td@ -f schema/attributes/save_attributes.sql
 db2 -td@ -f schema/admin/start_session_switch.sql
+db2 -td@ -f schema/admin/move_sessions.sql
+db2 -td@ -f schema/admin/unmoved_sessions_count.sql
 db2 -td@ -f schema/admin/end_session_switch.sql
 db2 -td@ -f schema/admin/start_attribute_switch.sql
+db2 -td@ -f schema/admin/move_attributes.sql
+db2 -td@ -f schema/admin/unmoved_attributes_count.sql
 db2 -td@ -f schema/admin/end_attribute_switch.sql
 ```
 

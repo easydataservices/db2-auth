@@ -139,10 +139,6 @@ If the session exists and has not expired then the LAST_ACCESSED_TS is updated.
 
 The procedure blocks other processes from accessing the same session row concurrently. During normal operation the block operates only on the active partition; when partition switching has been started the block operates on both partitions..
 
-## Module ADMIN
+# Partition switching
 
-## Procedure START_SESSION_SWITCH
-Procedure START_SESSION_SWITCH initiates session partition switching.
-
-## Procedure START_SESSION_SWITCH
-Procedure END_SESSION_SWITCH finalises session partition switching.
+Support for switching active partitions is described in [ADMIN](ADMIN.md)).
