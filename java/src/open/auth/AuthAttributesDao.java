@@ -26,7 +26,6 @@ import com.easydataservices.open.auth.util.Mask;
 public class AuthAttributesDao {
   private static final String className = AuthAttributesDao.class.getName();
   private static final Logger logger = Logger.getLogger(className);
-  private final short maxSmallint = 32767;
   private Connection connection;
   private String schemaName;
   Array attributeArray;
@@ -47,7 +46,7 @@ public class AuthAttributesDao {
    * Retrieve attributes.
    * @param sessionId Session identifier.
    * @param sinceGenerationId Earliest attribute generation to include in returned attributes.
-   * @return List of session attributes.
+   * @return List of session attributes. Deleted attributes have a {@code null} object.
    */
   public List<StoreAttribute> getAttributes(String sessionId, int sinceGenerationId) throws SQLException {
     final String maskedSessionId = Mask.last(sessionId, 4);
@@ -102,7 +101,7 @@ public class AuthAttributesDao {
 
   /**
    * Save attributes. The list of attributes passed can include both changed and unchanged attributes; however, passing only
-   * changes attributes is more efficient. Attributes passed with a {@code null} object are treated as deletions.
+   * changed attributes is more efficient. Attributes passed with a {@code null} object are considered deleted.
    * @param sessionId Session identifier.
    * @param sessionAttributes List of session attributes.
    */

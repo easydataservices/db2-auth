@@ -1,10 +1,4 @@
 -- Procedure ATTRIBUTES.GET_ATTRIBUTES retrieves session attributes for the specified session identifier (P_SESSION_ID).
--- Attribute names and generation are always returned.
--- The value of P_SINCE_GENERATION_ID determines whether the attribute object is returned, or NULL:
--- 1. When NULL, no attribute objects are returned (return all attribute names).
--- 2. When 0, all attribute objects are returned (full load).
--- 3. When greater then 0, only objects for attributes with a generation greater than P_SINCE_GENERATION_ID are
---    returned (delta load).
 ALTER MODULE attributes
 ADD PROCEDURE get_attributes
 (
@@ -79,14 +73,14 @@ BEGIN
   -- Iterate through session attributes in the active partition to populate array.
   FOR r AS
     SELECT 
-      attribute_name,
-      CASE WHEN generation_id > p_since_generation_id THEN object END AS object
+      attribute_name, object
     FROM
       sesatt
     WHERE
       session_internal_id = v_session_internal_id AND
       attribute_partition_num = v_attribute_partition_num AND
       partition_id = v_attribute_partition_id AND
+      generation_id > p_since_generation_id AND
       v_session_deleted_ts IS NULL
     WITH CS
   DO
@@ -101,14 +95,14 @@ BEGIN
   IF v_attribute_is_switching THEN
     FOR r AS
       SELECT 
-        attribute_name,
-        CASE WHEN generation_id > p_since_generation_id THEN object END AS object
+        attribute_name, object
       FROM
         sesatt
       WHERE
         session_internal_id = v_session_internal_id AND
         attribute_partition_num = v_attribute_partition_num AND
         partition_id != v_attribute_partition_id AND
+        generation_id > p_since_generation_id AND
         v_session_deleted_ts IS NULL
       WITH CS
     DO

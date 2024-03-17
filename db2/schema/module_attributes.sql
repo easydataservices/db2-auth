@@ -11,6 +11,7 @@ PUBLISH TYPE session_attribute AS ROW
 ALTER MODULE attributes
 PUBLISH TYPE session_attribute_array AS session_attribute ARRAY[];
 
+-- Save session attributes.
 ALTER MODULE attributes
 PUBLISH PROCEDURE save_attributes
 (
@@ -18,6 +19,10 @@ PUBLISH PROCEDURE save_attributes
   p_session_attributes session_attribute_array
 );
 
+-- Retrieve session attributes for the specified session identifier (P_SESSION_ID). The specified P_SINCE_GENERATION_ID value
+-- determines which attributes are returned. When 0, all attribute objects are returned (i.e. full load); when greater than 0,
+-- only attributes with a generation later than P_SINCE_GENERATION_ID are returned (i.e. delta load). Deleted attributes are
+-- returned with a NULL object.
 ALTER MODULE attributes
 PUBLISH PROCEDURE get_attributes
 (

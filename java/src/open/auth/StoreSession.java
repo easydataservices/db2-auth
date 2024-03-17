@@ -103,7 +103,7 @@ public class StoreSession {
 
   /**
    * Return flag indicating whether or not a session user is authenticated.
-   * @return {@true} if the session user is authenticated; otherwise {@false}.
+   * @return {@code true} if the session user is authenticated; otherwise {@code false}.
    */
   public boolean isAuthenticated() {
     return isAuthenticated; 
@@ -111,7 +111,7 @@ public class StoreSession {
 
   /**
    * Return flag indicating whether or not a session is expired.
-   * @return {@true} if the session is expired; otherwise {@false}.
+   * @return {@code true} if the session is expired; otherwise {@code false}.
    */
   public boolean isExpired() {
     return isExpired; 
@@ -191,7 +191,7 @@ public class StoreSession {
 
   /**
    * Set flag indicating whether or not a session user is authenticated.
-   * @param isAuthenticated {@true} if the session user is authenticated; otherwise {@false}.
+   * @param isAuthenticated {@code true} if the session user is authenticated; otherwise {@code false}.
    */
   protected void setAuthenticated(boolean isAuthenticated) {
     this.isAuthenticated = isAuthenticated;
@@ -199,7 +199,7 @@ public class StoreSession {
 
   /**
    * Set flag indicating whether or not a session is expired.
-   * @param isExpired {@true} if the session is expired; otherwise {@false}.
+   * @param isExpired {@code true} if the session is expired; otherwise {@code false}.
    */
   protected void setExpired(boolean isExpired) {
     this.isExpired = isExpired;

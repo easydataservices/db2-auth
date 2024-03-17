@@ -28,7 +28,7 @@ The design is implemented with database modules, each covering a specific functi
 A corresponding Java DAO class is provided for the first 3 modules listed above.
 
 # Project status
-In final testing before a first formal release.
+Has completed performance testing to prove capability under load. Code is being reviewed for intended Spring support.
 
 # Further documentation
 
